@@ -23,30 +23,36 @@ namespace password_generator
         const string elements = "abcdefghijklmnopqrstuvwxyzABDEFGHIJKLMNOPRSTUVWXYZ0123456789_!@$#%&{}()?>.<+-";
         private void Form1_Load(object sender, EventArgs e)
         {
-            using (StreamReader str = new StreamReader(@"..\..\loc.txt"))
+            if (File.Exists(@"..\..\loc.txt"))
             {
-                readLine = str.ReadLine();
-                if (String.IsNullOrEmpty(readLine))
+                using (StreamReader str = new StreamReader(@"..\..\loc.txt"))
                 {
-                    button1.Enabled = false;
+                    readLine = str.ReadLine();
+                    if (String.IsNullOrEmpty(readLine))
+                    {
+                        button1.Enabled = false;
+                    }
+                    else
+                    {
+                        button1.Enabled = true;
+                        path = readLine;
+                    }
                 }
-                else
-                {
-                    button1.Enabled = true;
-                    path = readLine;
-                }
-                str.Close();
+            }
+            else
+            {
+                File.Create(@"..\..\loc.txt");
+                button1.Enabled = false;
             }
         }
         private void button1_Click(object sender, EventArgs e)
         {
-            File.Encrypt(path);
             using (StreamWriter streamWriter = new StreamWriter(path, true))
             {
                 streamWriter.WriteLine(textBox1.Text + " : " + PasswordGen(trackBar1.Value));
                 streamWriter.WriteLine("-----------------------------------------------------");
-                streamWriter.Close();
             }
+            File.Encrypt(path);
         }
         private string PasswordGen(int n = 25)
         {
@@ -65,7 +71,6 @@ namespace password_generator
                 {
                     path = folderBrowserDialog1.SelectedPath;
                     sw.WriteLine(path + @"\secrets.txt");
-                    sw.Close();
                 }
                 button1.Enabled = true;
             }
