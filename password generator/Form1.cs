@@ -17,34 +17,41 @@ namespace password_generator
         {
             InitializeComponent();
         }
-        private static StreamReader str = new StreamReader(@"..\..\loc.txt");
         private Random random = new Random();
         private string path = "";
+        private string readLine;
         const string elements = "abcdefghijklmnopqrstuvwxyzABDEFGHIJKLMNOPRSTUVWXYZ0123456789_!@$#%&{}()?>.<+-";
         private void Form1_Load(object sender, EventArgs e)
         {
-            if (String.IsNullOrEmpty(str.ReadLine()))
+            using (StreamReader str = new StreamReader(@"..\..\loc.txt"))
             {
-                button1.Enabled = false;
-            }
-            else
-            {
-                button1.Enabled = true;
-                path = str.ReadLine();
+                readLine = str.ReadLine();
+                if (String.IsNullOrEmpty(readLine))
+                {
+                    button1.Enabled = false;
+                }
+                else
+                {
+                    button1.Enabled = true;
+                    path = readLine;
+                }
+                str.Close();
             }
         }
         private void button1_Click(object sender, EventArgs e)
         {
-            StreamWriter streamWriter = new StreamWriter(path, true);
             File.Encrypt(path);
-            streamWriter.WriteLine(textBox1.Text + " : " + PasswordGen(trackBar1.Value));
-            streamWriter.WriteLine("-----------------------------------------------------");
-            streamWriter.Close();
+            using (StreamWriter streamWriter = new StreamWriter(path, true))
+            {
+                streamWriter.WriteLine(textBox1.Text + " : " + PasswordGen(trackBar1.Value));
+                streamWriter.WriteLine("-----------------------------------------------------");
+                streamWriter.Close();
+            }
         }
         private string PasswordGen(int n = 25)
         {
             StringBuilder pass = new StringBuilder(n);
-            for (int i = 0; i <= n; i++)
+            for (int i = 0; i < n; i++)
             {
                 pass.Append(elements[random.Next(elements.Length)]);
             }
@@ -54,10 +61,12 @@ namespace password_generator
         {
             if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
             {
-                StreamWriter sw = new StreamWriter(@"..\..\loc.txt", false);
-                path = folderBrowserDialog1.SelectedPath;
-                sw.WriteLine(path + @"\secrets.txt");
-                sw.Close();
+                using (StreamWriter sw = new StreamWriter(@"..\..\loc.txt", false))
+                {
+                    path = folderBrowserDialog1.SelectedPath;
+                    sw.WriteLine(path + @"\secrets.txt");
+                    sw.Close();
+                }
                 button1.Enabled = true;
             }
         }
