@@ -17,14 +17,13 @@ namespace password_generator
         {
             InitializeComponent();
         }
-
         private static StreamReader str = new StreamReader(@"..\..\loc.txt");
         private Random random = new Random();
         private string path = "";
         const string elements = "abcdefghijklmnopqrstuvwxyzABDEFGHIJKLMNOPRSTUVWXYZ0123456789_!@$#%&{}()?>.<+-";
         private void Form1_Load(object sender, EventArgs e)
         {
-            if (str.ReadLine() == null)
+            if (String.IsNullOrEmpty(str.ReadLine()))
             {
                 button1.Enabled = false;
             }
@@ -34,7 +33,6 @@ namespace password_generator
                 path = str.ReadLine();
             }
         }
-
         private void button1_Click(object sender, EventArgs e)
         {
             StreamWriter streamWriter = new StreamWriter(path, true);
