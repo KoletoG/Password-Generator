@@ -19,27 +19,31 @@ namespace password_generator
         }
 
         private static StreamReader str = new StreamReader(@"..\..\loc.txt");
-        private static StreamWriter sw = new StreamWriter(@"..\..\loc.txt", true);
         private Random random = new Random();
         private string path = "";
         const string elements = "abcdefghijklmnopqrstuvwxyzABDEFGHIJKLMNOPRSTUVWXYZ0123456789_!@$#%&{}()?>.<+-";
         private void Form1_Load(object sender, EventArgs e)
         {
-            if(str.ReadLine()==null)
+            if (str.ReadLine() == null)
             {
                 button1.Enabled = false;
+            }
+            else
+            {
+                button1.Enabled = true;
+                path = str.ReadLine();
             }
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string path1 = str.ReadLine();
-            StreamWriter streamWriter = new StreamWriter(path1+@"\secrets.txt",true);
-            File.Encrypt(path1 + @"\secrets.txt");
+            StreamWriter streamWriter = new StreamWriter(path, true);
+            File.Encrypt(path);
             streamWriter.WriteLine(textBox1.Text + " : " + PasswordGen(trackBar1.Value));
             streamWriter.WriteLine("-----------------------------------------------------");
+            streamWriter.Close();
         }
-        private string PasswordGen(int n=25)
+        private string PasswordGen(int n = 25)
         {
             StringBuilder pass = new StringBuilder(n);
             for (int i = 0; i <= n; i++)
@@ -50,14 +54,18 @@ namespace password_generator
         }
         private void button2_Click(object sender, EventArgs e)
         {
-            if(folderBrowserDialog1.ShowDialog()==DialogResult.OK)
+            if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
             {
-                path =folderBrowserDialog1.SelectedPath;
-                StreamWriter sw = new StreamWriter(@"..\..\loc.txt",false);
-                sw.WriteLine(path);
+                StreamWriter sw = new StreamWriter(@"..\..\loc.txt", false);
+                path = folderBrowserDialog1.SelectedPath;
+                sw.WriteLine(path + @"\secrets.txt");
                 sw.Close();
+                button1.Enabled = true;
             }
-            button1.Enabled = true;
+        }
+        private void folderBrowserDialog1_HelpRequest(object sender, EventArgs e)
+        {
+
         }
     }
 }
