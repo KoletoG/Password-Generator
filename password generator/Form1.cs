@@ -18,40 +18,35 @@ namespace password_generator
             InitializeComponent();
         }
 
+        private static StreamReader str = new StreamReader(@"..\..\loc.txt");
+        private static StreamWriter sw = new StreamWriter(@"..\..\loc.txt", true);
+        private Random random = new Random();
         private string path = "";
+        const string elements = "abcdefghijklmnopqrstuvwxyzABDEFGHIJKLMNOPRSTUVWXYZ0123456789_!@$#%&{}()?>.<+-";
         private void Form1_Load(object sender, EventArgs e)
         {
-            StreamWriter sw = new StreamWriter(@"..\..\loc.txt",true);
-            sw.Close();
-            StreamReader sr = new StreamReader(@"..\..\loc.txt");
-            if(sr.ReadLine()==null)
+            if(str.ReadLine()==null)
             {
                 button1.Enabled = false;
             }
-            sr.Close();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            StreamReader str = new StreamReader(@"..\..\loc.txt");
             string path1 = str.ReadLine();
-            str.Close();
             StreamWriter streamWriter = new StreamWriter(path1+@"\secrets.txt",true);
             File.Encrypt(path1 + @"\secrets.txt");
             streamWriter.WriteLine(textBox1.Text + " : " + PasswordGen(trackBar1.Value));
             streamWriter.WriteLine("-----------------------------------------------------");
-            streamWriter.Close();
         }
         private string PasswordGen(int n=25)
         {
-            string elements = "abcdefghijklmnopqrstuvwxyzABDEFGHIJKLMNOPRSTUVWXYZ0123456789_!@$#%&{}()?>.<+-";
-            string pass = "";
-            Random random = new Random();
+            StringBuilder pass = new StringBuilder(n);
             for (int i = 0; i <= n; i++)
             {
-                pass += elements[random.Next(77)];
+                pass.Append(elements[random.Next(elements.Length)]);
             }
-            return pass;
+            return pass.ToString();
         }
         private void button2_Click(object sender, EventArgs e)
         {
@@ -63,11 +58,6 @@ namespace password_generator
                 sw.Close();
             }
             button1.Enabled = true;
-        }
-
-        private void folderBrowserDialog1_HelpRequest(object sender, EventArgs e)
-        {
-
         }
     }
 }
