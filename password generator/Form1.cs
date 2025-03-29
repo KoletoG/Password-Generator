@@ -41,7 +41,7 @@ namespace password_generator
             }
             else
             {
-                File.Create(@"..\..\loc.txt");
+                using (FileStream fs = File.Create(@"..\..\loc.txt")) { }
                 button1.Enabled = false;
             }
         }
