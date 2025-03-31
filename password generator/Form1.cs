@@ -8,16 +8,19 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Forms;
+using Microsoft.Extensions.Logging;
 
 namespace password_generator
 {
     public partial class Form1 : Form
     {
         private IMethodService methodService;
-        public Form1()
+        private Logger<Form1> _logger;
+        public Form1(Logger<Form1> logger, IMethodService _methodService)
         {
             InitializeComponent();
-            methodService = new MethodService();
+            _logger = logger;
+            methodService = _methodService;
         }
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -27,7 +30,7 @@ namespace password_generator
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                _logger.LogError(ex.ToString());
             }
         }
         private void button1_Click(object sender, EventArgs e)
@@ -38,7 +41,7 @@ namespace password_generator
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                _logger.LogError(ex.ToString());
             }
         }
         private void button2_Click(object sender, EventArgs e)
@@ -52,7 +55,7 @@ namespace password_generator
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                _logger.LogError(ex.ToString());
             }
         }
         private void folderBrowserDialog1_HelpRequest(object sender, EventArgs e)

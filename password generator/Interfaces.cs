@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace password_generator
 {
-    internal interface IMethodService
+    public interface IMethodService
     {
         void ReadLocation(ref Button button1);
         void WriteToSecrets(ref TextBox textBox1, ref TrackBar trackBar1);

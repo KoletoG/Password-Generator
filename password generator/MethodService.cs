@@ -6,15 +6,21 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace password_generator
 {
-    internal class MethodService : IMethodService
+    public class MethodService : IMethodService
     {
         private string readLine;
         private static Random random = new Random();
         private string path = "";
         private const string elements = "abcdefghijklmnopqrstuvwxyzABDEFGHIJKLMNOPRSTUVWXYZ0123456789_!@$#%&{}()?>.<+-";
+        private ILogger<MethodService> _logger;
+        public MethodService(ILogger<MethodService> logger)
+        {
+            _logger = logger;
+        }
         public void ReadLocation(ref Button button1)
         {
             if (File.Exists(@"..\..\loc.txt"))
