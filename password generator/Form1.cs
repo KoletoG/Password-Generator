@@ -17,62 +17,94 @@ namespace password_generator
         {
             InitializeComponent();
         }
-        private Random random = new Random();
+        private static Random random = new Random();
         private string path = "";
         private string readLine;
-        const string elements = "abcdefghijklmnopqrstuvwxyzABDEFGHIJKLMNOPRSTUVWXYZ0123456789_!@$#%&{}()?>.<+-";
+        private const string elements = "abcdefghijklmnopqrstuvwxyzABDEFGHIJKLMNOPRSTUVWXYZ0123456789_!@$#%&{}()?>.<+-";
         private void Form1_Load(object sender, EventArgs e)
         {
-            if (File.Exists(@"..\..\loc.txt"))
+            try
             {
-                using (StreamReader str = new StreamReader(@"..\..\loc.txt"))
+                if (File.Exists(@"..\..\loc.txt"))
                 {
-                    readLine = str.ReadLine();
-                    if (String.IsNullOrEmpty(readLine))
+                    using (StreamReader str = new StreamReader(@"..\..\loc.txt"))
                     {
-                        button1.Enabled = false;
-                    }
-                    else
-                    {
-                        button1.Enabled = true;
-                        path = readLine;
+                        readLine = str.ReadLine();
+                        if (String.IsNullOrEmpty(readLine))
+                        {
+                            button1.Enabled = false;
+                        }
+                        else
+                        {
+                            button1.Enabled = true;
+                            path = readLine;
+                        }
                     }
                 }
+                else
+                {
+                    using (FileStream fs = File.Create(@"..\..\loc.txt")) { }
+                    button1.Enabled = false;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                using (FileStream fs = File.Create(@"..\..\loc.txt")) { }
-                button1.Enabled = false;
+                Console.WriteLine(ex.ToString());
             }
         }
         private void button1_Click(object sender, EventArgs e)
         {
-            using (StreamWriter streamWriter = new StreamWriter(path, true))
+            try
             {
-                streamWriter.WriteLine(textBox1.Text + " : " + PasswordGen(trackBar1.Value));
-                streamWriter.WriteLine("-----------------------------------------------------");
+                using (StreamWriter streamWriter = new StreamWriter(path, true))
+                {
+                    streamWriter.WriteLine(textBox1.Text + " : " + PasswordGen(trackBar1.Value));
+                    streamWriter.WriteLine("-----------------------------------------------------");
+                }
+                File.Encrypt(path);
             }
-            File.Encrypt(path);
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
         }
         private string PasswordGen(int n = 25)
         {
-            StringBuilder pass = new StringBuilder(n);
-            for (int i = 0; i < n; i++)
+            try
             {
-                pass.Append(elements[random.Next(elements.Length)]);
+                StringBuilder pass = new StringBuilder(n);
+                for (int i = 0; i < n; i++)
+                {
+                    pass.Append(elements[random.Next(elements.Length)]);
+                }
+                return pass.ToString();
             }
-            return pass.ToString();
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            finally
+            {
+                throw new Exception("Error");
+            }
         }
         private void button2_Click(object sender, EventArgs e)
         {
-            if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
+            try
             {
-                using (StreamWriter sw = new StreamWriter(@"..\..\loc.txt", false))
+                if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
                 {
-                    path = folderBrowserDialog1.SelectedPath;
-                    sw.WriteLine(path + @"\secrets.txt");
+                    using (StreamWriter sw = new StreamWriter(@"..\..\loc.txt", false))
+                    {
+                        path = folderBrowserDialog1.SelectedPath;
+                        sw.WriteLine(path + @"\secrets.txt");
+                    }
+                    button1.Enabled = true;
                 }
-                button1.Enabled = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
             }
         }
         private void folderBrowserDialog1_HelpRequest(object sender, EventArgs e)
