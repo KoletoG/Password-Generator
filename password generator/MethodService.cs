@@ -21,6 +21,10 @@ namespace password_generator
         {
             _logger = logger;
         }
+        /// <summary>
+        /// Reads file location and if it exists -> enables button1
+        /// </summary>
+        /// <param name="button1">Button for creating the password</param>
         public void ReadLocation(ref Button button1)
         {
             if (File.Exists(@"..\..\loc.txt"))
@@ -45,15 +49,32 @@ namespace password_generator
                 button1.Enabled = false;
             }
         }
-        public void WriteToSecrets(ref TextBox textBox1,ref TrackBar trackBar1)
+        /// <summary>
+        /// Saves the password in 'secrets.txt'
+        /// </summary>
+        /// <param name="textBox1">For password usage</param>
+        /// <param name="trackBar1">How big should the password be</param>
+        public void WriteToSecrets(ref TextBox textBox1, ref TrackBar trackBar1)
         {
-            using (StreamWriter streamWriter = new StreamWriter(path, true))
+            try
             {
-                streamWriter.WriteLine(textBox1.Text + " : " + PasswordGen(trackBar1.Value));
-                streamWriter.WriteLine("-----------------------------------------------------");
+                using (StreamWriter streamWriter = new StreamWriter(path, true))
+                {
+                    streamWriter.WriteLine(textBox1.Text + " : " + PasswordGen(trackBar1.Value));
+                    streamWriter.WriteLine("-----------------------------------------------------");
+                }
+                File.Encrypt(path);
             }
-            File.Encrypt(path);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+            }
         }
+        /// <summary>
+        /// Generates password
+        /// </summary>
+        /// <param name="n">Gets desired password length</param>
+        /// <returns>Password</returns>
         private string PasswordGen(int n = 25)
         {
             try
@@ -68,22 +89,31 @@ namespace password_generator
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
-            }
-            finally
-            {
-                throw new Exception("Error");
+                _logger.LogError(ex.ToString());
+                throw ex;
             }
         }
+        /// <summary>
+        /// Sets the path for secrets.txt
+        /// </summary>
+        /// <param name="button1">Button for password generation</param>
+        /// <param name="folderBrowserDialog1">Gets the path for the secrets.txt</param>
         public void WritePath(ref Button button1, ref FolderBrowserDialog folderBrowserDialog1)
         {
-            using (StreamWriter sw = new StreamWriter(@"..\..\loc.txt", false))
+            try
             {
-                path = folderBrowserDialog1.SelectedPath;
-                sw.WriteLine(path + @"\secrets.txt");
+                using (StreamWriter sw = new StreamWriter(@"..\..\loc.txt", false))
+                {
+                    path = folderBrowserDialog1.SelectedPath;
+                    sw.WriteLine(path + @"\secrets.txt");
+                }
+                button1.Enabled = true;
             }
-            button1.Enabled = true;
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                throw ex;
+            }
         }
     }
-
 }
