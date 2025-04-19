@@ -9,8 +9,8 @@ namespace password_generator
 {
     public interface IMethodService
     {
-        void ReadLocation(ref Button button1);
-        void WriteToSecrets(ref TextBox textBox1, ref TrackBar trackBar1);
-        void WritePath(ref Button button1, ref FolderBrowserDialog folderBrowserDialog1);
+        void ReadLocation(Button button1);
+        void WriteToSecrets(TextBox textBox1, TrackBar trackBar1);
+        void WritePath(Button button1, FolderBrowserDialog folderBrowserDialog1);
     }
 }
