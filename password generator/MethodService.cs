@@ -15,7 +15,7 @@ namespace password_generator
         private string readLine;
         private static Random random = new Random();
         private string path = "";
-        private const string elements = "abcdefghijklmnopqrstuvwxyzABDEFGHIJKLMNOPRSTUVWXYZ0123456789_!@$#%&{}()?>.<+-";
+        private readonly char[] elements = "abcdefghijklmnopqrstuvwxyzABDEFGHIJKLMNOPRSTUVWXYZ0123456789_!@$#%&{}()?>.<+-".ToCharArray();
         private ILogger<MethodService> _logger;
         public MethodService(ILogger<MethodService> logger)
         {
@@ -105,7 +105,7 @@ namespace password_generator
                 using (StreamWriter sw = new StreamWriter(@"..\..\loc.txt", false))
                 {
                     path = folderBrowserDialog1.SelectedPath;
-                    sw.WriteLine(folderBrowserDialog1.SelectedPath + @"\secrets.txt");
+                    sw.WriteLine(path + @"\secrets.txt");
                 }
                 button1.Enabled = true;
             }
